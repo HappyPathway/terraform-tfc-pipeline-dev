@@ -1,3 +1,4 @@
+
 #This solution, non-production-ready template describes AWS Codepipeline based CICD Pipeline for terraform code deployment.
 #© 2023 Amazon Web Services, Inc. or its affiliates. All Rights Reserved.
 #This AWS Content is provided subject to the terms of the AWS Customer Agreement available at
@@ -61,17 +62,28 @@ variable "kms_key_arn" {
 }
 
 
-variable environment_variables {
-    type = list(object({
-      name = string
-      value = string
-      type = string
-    }))
-    default = []
+variable "environment_variables" {
+  type = list(object({
+    name  = string
+    value = string
+    type  = string
+  }))
+  default = []
 }
 
-variable terraform_version {
-  type = string
+variable "terraform_version" {
+  type        = string
   description = "Terraform CLI Version"
-  default = "1.7.5"
+  default     = "1.7.5"
+}
+
+variable "file_system" {
+  description = "EFS file system configuration"
+  type = object({
+    location      = string
+    mount_point   = string
+    mount_options = string
+    identifier    = string
+  })
+  default = null
 }

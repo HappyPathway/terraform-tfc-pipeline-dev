@@ -9,14 +9,13 @@ variable "project_name" {
   type        = string
 }
 
-variable "source_repo_name" {
-  description = "Source repo name of the CodeCommit repository"
-  type        = string
-}
-
-variable "source_repo_branch" {
-  description = "Default branch in the Source repo for which CodePipeline needs to be configured"
-  type        = string
+variable "source_repos" {
+  description = "Information about the source repository"
+  type = list(object({
+    name          = string
+    branch        = string
+    provider_type = string
+  }))
 }
 
 variable "s3_bucket_name" {
@@ -42,4 +41,13 @@ variable "tags" {
 variable "stages" {
   description = "List of Map containing information about the stages of the CodePipeline"
   type        = list(map(any))
+}
+
+variable "repo_connection" {
+  description = "Information about the repository connection"
+  type = object({
+    name          = string
+    provider_type = string
+  })
+  default = null
 }

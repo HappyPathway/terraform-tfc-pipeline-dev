@@ -53,7 +53,7 @@ variable "stage_input" {
   default = [
     { name = "validate", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = "SourceOutput", output_artifacts = "ValidateOutput" },
     { name = "plan", category = "Test", owner = "AWS", provider = "CodeBuild", input_artifacts = "ValidateOutput", output_artifacts = "PlanOutput" },
-    { name = "approval", category = "Approval", owner = "AWS", provider = "Manual"},
+    { name = "approval", category = "Approval", owner = "AWS", provider = "Manual" },
     { name = "apply", category = "Build", owner = "AWS", provider = "CodeBuild", input_artifacts = "PlanOutput", output_artifacts = "ApplyOutput" },
   ]
 }
@@ -61,7 +61,7 @@ variable "stage_input" {
 variable "build_projects" {
   description = "Tags to be attached to the CodePipeline"
   type        = list(string)
-  default = ["validate", "plan", "apply"]
+  default     = ["validate", "plan", "apply"]
 }
 
 variable "builder_compute_type" {
@@ -95,21 +95,110 @@ variable "build_project_source" {
 }
 
 
-variable build_environment_variables {
-    type = list(object({
-      name = string
-      value = string
-      type = string
-    }))
-    default = []
+variable "build_environment_variables" {
+  type = list(object({
+    name  = string
+    value = string
+    type  = string
+  }))
+  default = []
 }
 
-variable terraform_version {
-  type = string
+variable "terraform_version" {
+  type        = string
   description = "Terraform CLI Version"
-  default = "1.7.5"
+  default     = "1.7.5"
 }
 
-variable build_permissions_iam_doc {
+variable "build_permissions_iam_doc" {
   type = any
+}
+
+#This solution, non-production-ready template describes AWS Codepipeline based CICD Pipeline for terraform code deployment.
+#© 2023 Amazon Web Services, Inc. or its affiliates. All Rights Reserved.
+#This AWS Content is provided subject to the terms of the AWS Customer Agreement available at
+#http://aws.amazon.com/agreement or other written agreement between Customer and either
+#Amazon Web Services, Inc. or Amazon Web Services EMEA SARL or both.
+
+variable "project_name" {
+  description = "Unique name for this project"
+  type        = string
+}
+
+variable "role_arn" {
+  description = "Codepipeline IAM role arn. "
+  type        = string
+  default     = ""
+}
+
+variable "s3_bucket_name" {
+  description = "Name of the S3 bucket used to store the deployment artifacts"
+  type        = string
+}
+
+variable "tags" {
+  description = "Tags to be applied to the codebuild project"
+  type        = map(any)
+}
+
+variable "build_projects" {
+  description = "List of Names of the CodeBuild projects to be created"
+  type        = list(string)
+}
+
+variable "builder_compute_type" {
+  description = "Information about the compute resources the build project will use"
+  type        = string
+}
+
+variable "builder_image" {
+  description = "Docker image to use for the build project"
+  type        = string
+}
+
+variable "builder_type" {
+  description = "Type of build environment to use for related builds"
+  type        = string
+}
+
+variable "builder_image_pull_credentials_type" {
+  description = "Type of credentials AWS CodeBuild uses to pull images in your build."
+  type        = string
+}
+
+variable "build_project_source" {
+  description = "Information about the build output artifact location"
+  type        = string
+}
+
+variable "kms_key_arn" {
+  description = "ARN of KMS key for encryption"
+  type        = string
+}
+
+
+variable "environment_variables" {
+  type = list(object({
+    name  = string
+    value = string
+    type  = string
+  }))
+  default = []
+}
+
+variable "terraform_version" {
+  type        = string
+  description = "Terraform CLI Version"
+  default     = "1.7.5"
+}
+
+variable "file_system" {
+  description = "EFS file system configuration"
+  type = object({
+    location      = string
+    mount_point   = string
+    mount_options = string
+    identifier    = string
+  })
+  default = null
 }
