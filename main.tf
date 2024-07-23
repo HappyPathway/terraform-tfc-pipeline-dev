@@ -18,7 +18,7 @@ terraform {
 
 #Module for creating a new S3 bucket for storing pipeline artifacts
 module "s3_artifacts_bucket" {
-  source                = "./modules/s3"
+  source                = "HappyPathway/pipeline/tfc//modules/s3"
   project_name          = var.project_name
   kms_key_arn           = module.codepipeline_kms.arn
   codepipeline_role_arn = module.codepipeline_iam_role.role_arn
@@ -34,8 +34,7 @@ module "s3_artifacts_bucket" {
 
 # Module for Infrastructure Source code repository
 module "codecommit_infrastructure_source_repo" {
-  source = "./modules/codecommit"
-
+  source                   = "HappyPathway/pipeline/tfc//modules/codecommit"
   create_new_repo          = var.create_new_repo
   source_repository_name   = var.source_repo_name
   source_repository_branch = var.source_repo_branch
@@ -52,7 +51,7 @@ module "codecommit_infrastructure_source_repo" {
 
 
 module "codepipeline_kms" {
-  source                = "./modules/kms"
+  source                = "HappyPathway/pipeline/tfc//modules/kms"
   codepipeline_role_arn = module.codepipeline_iam_role.role_arn
   tags = {
     Project_Name = var.project_name
@@ -67,8 +66,7 @@ module "codebuild_terraform" {
   depends_on = [
     module.codecommit_infrastructure_source_repo
   ]
-  source = "./modules/codebuild"
-
+  source                              = "HappyPathway/pipeline/tfc//modules/codebuild"
   project_name                        = var.project_name
   role_arn                            = module.codepipeline_iam_role.role_arn
   s3_bucket_name                      = module.s3_artifacts_bucket.bucket
@@ -104,7 +102,7 @@ module "codebuild_terraform" {
 }
 
 module "codepipeline_iam_role" {
-  source                     = "./modules/iam-role"
+  source                     = "HappyPathway/pipeline/tfc//modules/iam-role"
   project_name               = var.project_name
   create_new_role            = var.create_new_role
   codepipeline_iam_role_name = var.create_new_role == true ? "${var.project_name}-codepipeline-role" : var.codepipeline_iam_role_name
@@ -126,7 +124,7 @@ module "codepipeline_terraform" {
     module.codebuild_terraform,
     module.s3_artifacts_bucket
   ]
-  source = "./modules/codepipeline"
+  source = "HappyPathway/pipeline/tfc//modules/codepipeline"
 
   project_name          = var.project_name
   s3_bucket_name        = module.s3_artifacts_bucket.bucket

@@ -20,3 +20,8 @@ output "arn" {
   value       = var.create_new_repo ? aws_codecommit_repository.source_repository[0].arn : data.aws_codecommit_repository.existing_repository[0].arn
   description = "LList containing the arn of the CodeCommit repositories"
 }
+
+output "repository_branch" {
+  value       = var.create_new_repo ? aws_codecommit_repository.source_repository[0].default_branch : var.source_repository_branch
+  description = "List containing the default branch of the CodeCommit repositories"
+}
