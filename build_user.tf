@@ -9,7 +9,6 @@ resource "aws_iam_user" "build_user" {
   }
 }
 
-# fork comment pr test
 resource "aws_iam_access_key" "build_user" {
   user = aws_iam_user.build_user.name
 }
